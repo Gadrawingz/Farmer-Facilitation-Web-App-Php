@@ -1,0 +1,12 @@
+AddType application/x-httpd-php .htm
+AddType application/x-httpd-php .html
+
+RewriteEngine On
+
+Options All -Indexes
+
+# Hiding extensions
+RewriteCond %{THE_REQUEST} /([^.]+)\.php [NC]
+RewriteRule ^ /%1 [NC,L,R]
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^ %{REQUEST_URI}.php [NC,L]
