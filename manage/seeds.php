@@ -66,7 +66,7 @@
                       <div class="row">
                         <div class="col-md-6">
                           <div class="form-group row">
-                            <label class="col-md-3 col-form-label"><strong><?php echo ucfirst($main_item); ?> Quantity</strong></label>
+                            <label class="col-md-3 col-form-label"><strong>Quantity (kgs)</strong></label>
                             <div class="col-md-9">
                               <input type="number" name="quantity" class="form-control" required/>
                             </div>
@@ -112,7 +112,7 @@
               <?php
               if(isset($_POST['update_btn'])) {
                 // @Gadrawingz
-                if(!$query->checkDamnItem($_POST['item_name'], $criteria)) {
+                if($query->checkDamnItem($_POST['item_name'], $criteria)<=1) {
                   if($query->updateDamnItem($_GET['upd_item'], $_POST['item_name'], $_POST['item_type'], $_POST['quantity'], $_POST['unit_price'], $criteria)) {
                     echo "<script>alert('".strtoupper($main_item)." IS UPDATED!')</script>";
                     echo "<script>window.location='?view_all'</script>";
@@ -162,7 +162,7 @@
                       <div class="row">
                         <div class="col-md-6">
                           <div class="form-group row">
-                            <label class="col-md-3 col-form-label"><strong><?php echo ucfirst($main_item); ?> Quantity</strong></label>
+                            <label class="col-md-3 col-form-label"><strong>Quantity (kgs)</strong></label>
                             <div class="col-md-9">
                               <input type="number" name="quantity" value="<?php echo $res['quantity'];?>" class="form-control" required/>
                             </div>
@@ -220,6 +220,7 @@
                           <th> No </th>
                           <th> Name </th>
                           <th> Type </th>
+                          <th> Quantity </th>
                           <th> Unit Price </th>
                           <th> Total Price </th>
                           <th> Reg.Date </th>
@@ -238,8 +239,9 @@
                           <td> <?php echo $num; ?> </td>
                           <td> <?php echo $result['item_name']; ?> </td>
                           <td> <?php echo $result['item_type']; ?> </td>
-                          <td> <?php echo $result['quantity']; ?> </td>
-                          <td> <?php echo $result['unit_price']; ?> </td>
+                          <td> <?php echo $result['quantity']; ?> kgs </td>
+                          <td> <?php echo $result['unit_price']; ?>rwf </td>
+                          <td> <?php echo ($result['quantity'] * $result['unit_price']); ?>rwf </td>
                           <td> <?php echo $result['created_at']; ?> </td>
                           <td class="text-center"> 
                             <div class="btn-group" role="group">

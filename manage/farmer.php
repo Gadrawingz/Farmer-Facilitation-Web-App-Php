@@ -17,16 +17,17 @@
                 $dob = $_POST['dob'];
                 $nid = $_POST['national_id'];
                 $tel = $_POST['telephone'];
-                $lar = $_POST['area'];
+                $are = $_POST['land_area'];
                 $pwd = '1234';
-                $dst = $_POST['district'];
-                $sct = $_POST['sector'];
-                $cll = $_POST['cell'];
-                $vlg = $_POST['village'];
-                
+                $pro = strtoupper($_POST['province']);
+                $dst = strtoupper($_POST['district']);
+                $sct = strtoupper($_POST['sector']);
+                $cll = strtoupper($_POST['cell']);
+                $vlg = strtoupper($_POST['village']);
+
                 if($query->checkFarmerExistenceByAdmin($tel, $nid)==0){
-                  if($fnm!='' && $lnm!='' && $gdr!='' && $dob!='' && $nid!='' && $tel!='' && $lar!='' &&  $pwd!='' && $dst!='' && $sct!='' && $cll!='' && $vlg!=''){
-                    if($query->registerFarmerByAdmin($fnm, $lnm, $gdr, $dob, $nid, $tel, $pwd, $lar, $dst, $sct, $cll, $vlg)=='1'){
+                  if($fnm!='' && $lnm!='' && $gdr!='' && $dob!='' && $nid!='' && $tel!='' && $are!='' &&  $pwd!='' && $pro!='' && $dst!='' && $sct!='' && $cll!='' && $vlg!=''){
+                    if($query->registerFarmerByAdmin($fnm, $lnm, $gdr, $dob, $nid, $tel, $pwd, $are, $pro, $dst, $sct, $cll, $vlg)=='1'){
                       echo "<script>alert('FARMER HAS BEEN SAVED!')</script>";
                     } else {
                       echo "<script>alert('Cannot perform registration!!')</script>";
@@ -76,9 +77,9 @@
                         </div>
                         <div class="col-md-6">
                           <div class="form-group row">
-                            <label class="col-md-3 col-form-label"><strong>Date of Birth</strong></label>
+                            <label class="col-md-3 col-form-label"><strong>Year of Birth</strong></label>
                             <div class="col-md-9">
-                              <input type="date" class="form-control" name="dob" placeholder="dd/mm/yyyy" required/>
+                              <input type="number" min="1900" max="3000" class="form-control" name="dob" placeholder="1998" required/>
                             </div>
                           </div>
                         </div>
@@ -124,11 +125,12 @@
                           <div class="form-group row">
                             <label class="col-md-3 col-form-label">District</label>
                             <div class="col-md-9">
-                              <select class="form-control" name="district" required>
+                              <input type="text" name="district" class="form-control" required/>
+                              <!-- <select class="form-control" name="district" required>
                                 <option value="Huye">Huye</option>
                                 <option value="Nyanza">Nyanza</option>
                                 <option value="Muhanga">Muhanga</option>
-                              </select>
+                              </select> -->
                             </div>
                           </div>
                         </div>
@@ -139,10 +141,11 @@
                           <div class="form-group row">
                             <label class="col-md-3 col-form-label">Sector</label>
                             <div class="col-md-9">
-                              <select class="form-control" name="sector" required>
+                              <input type="text" name="sector" class="form-control" required/>
+                              <!-- <select class="form-control" name="sector" required>
                                 <option value="Tumba">Tumba</option>
                                 <option value="Rango">Rango</option>
-                              </select>
+                              </select> -->
                             </div>
                           </div>
                         </div>
@@ -151,10 +154,11 @@
                           <div class="form-group row">
                             <label class="col-md-3 col-form-label">Cell</label>
                             <div class="col-md-9">
-                              <select class="form-control" name="cell" required>
+                              <input type="text" name="cell" class="form-control" required/>
+                              <!-- <select class="form-control" name="cell" required>
                                 <option value="Cyarwa">Cyarwa</option>
                                 <option value="Gitesanyi">Gitesanyi</option>
-                              </select>
+                              </select> -->
                             </div>
                           </div>
                         </div>
@@ -173,7 +177,7 @@
                           <div class="form-group row">
                             <label class="col-md-3 col-form-label">Land Area</label>
                             <div class="col-md-9">
-                              <input type="text" name="area" class="form-control" required />
+                              <input type="text" name="land_area" class="form-control" required />
                             </div>
                           </div>
                         </div>
@@ -209,6 +213,34 @@
 
             if(isset($_GET['conf'])) { 
               $query->confirmFarmer($_GET['conf']);
+
+              $stmt= $query->viewFarmer($_GET['conf']);
+              $result1= $stmt->FETCH(PDO::FETCH_ASSOC);
+
+              $names = $result1['firstname']." ".$result1['lastname'];
+              $l_area= $result1['land_area'];
+              $phone = $result1['telephone'];
+
+              $data = array(
+                "sender"=>'KIGALIGAS',
+                "recipients"=>$phone,
+                "message"=>"Ubusabe bwa konti yawe nka ".$names." uhinga ku buso bwa ".$l_area."(m/area) bwemewe Murakoze!");
+              
+                              $url = "https://www.intouchsms.co.rw/api/sendsms/.json";
+                              $data = http_build_query ($data);
+                              $username="benii"; 
+                              $password="Ben@1234";
+                              $ch = curl_init();
+                              curl_setopt($ch,CURLOPT_URL, $url);
+                              curl_setopt($ch, CURLOPT_USERPWD, $username.":".$password);
+                              curl_setopt($ch,CURLOPT_POST,true);
+                              curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+                              curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+                              curl_setopt($ch,CURLOPT_POSTFIELDS, $data);
+                              $result = curl_exec($ch);
+                              $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                              curl_close($ch);
+
               echo "<script>window.location='?view_conf'</script>";
             }
             ?>

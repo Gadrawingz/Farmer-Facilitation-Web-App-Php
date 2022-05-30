@@ -6,14 +6,22 @@ $func = new Functions;
 include('../configs/query.php');
 $query = new Query;
 
+include('../configs/query_api.php');
+$api_query = new ApiQuery;
+
 if(isset($_GET['out_destroy_shit'])) {
   session_destroy();
   echo "<script>window.location='login'</script>";
 }
 
-if(!isset($_SESSION['admin_id'])) {
+$recHarvestCount = $query->newHarvestCounts();
+$penRequestCount = $query->penRequestCounts();
+$acpRequestCount = $query->acpRequestCounts();
+$farmersCount    = $query->countFarmers();
+
+/*if(!isset($_SESSION['admin_id'])) {
   echo "<script>window.location='../admin/login'</script>"; 
-}
+}*/
 ?>
 
 <!DOCTYPE html>
@@ -35,15 +43,26 @@ if(!isset($_SESSION['admin_id'])) {
     <link rel="stylesheet" href="../assets/css/demo_1/style.css">
     <!-- End Layout styles -->
     <link rel="shortcut icon" href="../assets/images/favicon.ico" />
+    <style>
+      .cool-text {
+        background-color: white;
+        border: 1px solid black;
+        border-radius: 5px;
+        padding: 4px;
+        margin-bottom: 10px;
+        text-align: center;
+      }
+    </style>
   </head>
   <body>
     <div class="container-scroller">
       <!-- partial:partials/_navbar.html -->
       <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div class="text-center navbar-brand-wrapper d-flex align-items-top justify-content-center">
-          <a class="navbar-brand brand-logo" href="index.html">
-            <img src="../assets/images/samples/invoice_banner.jpg" alt="logo" style="width: 100%; border-bottom: 2px solid white;" /> </a>
-          <a class="navbar-brand brand-logo-mini" href="index.html">
+          <a class="navbar-brand brand-logo" href="#" style="border: 3px solid white!important; border-radius: 10px!important; padding: 4px 40px!important; font-size: 30px!important; margin-top: 5px!important; margin-bottom: 5px!important;">
+            F.F.A
+          </a>
+          <a class="navbar-brand brand-logo-mini" href="#">
             <img src="../assets/images/logo-mini.svg" alt="logo" /> </a>
         </div>
         <div class="navbar-menu-wrapper d-flex align-items-center">
@@ -62,9 +81,9 @@ if(!isset($_SESSION['admin_id'])) {
           </form>
           <ul class="navbar-nav ml-auto">
             <li class="nav-item dropdown">
-              <a class="nav-link count-indicator" id="messageDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
+              <a class="nav-link count-indicator" id="messageDropdown" data-toggle="dropdown" aria-expanded="false" title="Farmer Pending requests">
                 <i class="mdi mdi-bell-outline"></i>
-                <span class="count">7</span>
+                <span class="count"><?php echo $penRequestCount; ?></span>
               </a>
               <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="messageDropdown">
                 <a class="dropdown-item py-3">
@@ -102,9 +121,9 @@ if(!isset($_SESSION['admin_id'])) {
               </div>
             </li>
             <li class="nav-item dropdown">
-              <a class="nav-link count-indicator" id="notificationDropdown" href="#" data-toggle="dropdown">
-                <i class="mdi mdi-email-outline"></i>
-                <span class="count bg-success">3</span>
+              <a class="nav-link count-indicator" id="notificationDropdown" title="Total harvests" data-toggle="dropdown">
+                <i class="mdi mdi-bell-outline"></i>
+                <span class="count bg-warning"><?php echo $recHarvestCount; ?></span>
               </a>
               <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="notificationDropdown">
                 <a class="dropdown-item py-3 border-bottom">

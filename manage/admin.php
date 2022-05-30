@@ -11,23 +11,27 @@
 
             <?php if(isset($_GET['register'])) { ?>
             <div class="row">
-              <?php
-              if(isset($_POST['save_btn'])) {
-                if(!$query->checkAdminExistence($_POST['email'], $_POST['telephone'])) {
-                
-                  if($query->registerAdmin($_POST['firstname'], $_POST['lastname'], $_POST['gender'], $_POST['email'], $_POST['telephone'], $_POST['password'])) {
-                    echo "<script>alert('SAVED!')</script>";
-                  } else {
-                    echo "<script>alert('ERROR!')</script>";
-                  }
-                } else {
-                  echo "<script>alert('ALREADY REGISTERED!')</script>";
-                }
-              } ?>
               <div class="col-md-12"><!-- <div class="col-12 grid-margin"> -->
                 <div class="card">
                   <div class="card-body">
                     <h3>Register new admin</h3><hr>
+                    <div class="cool-text text-primary">
+                      <?php
+                      if(isset($_POST['save_btn'])) {
+                        $data = array(
+                          'firstname' => $_POST['firstname'],
+                          'lastname' => $_POST['lastname'],
+                          'telephone' => $_POST['telephone'],
+                          'gender' => $_POST['gender'],
+                          'email' => $_POST['email'],
+                          'password' => $_POST['password'],
+                          'email' => $_POST['email']);
+
+                        echo $func->httpPost("http://localhost/farmer-app/api_transfer?call=reg_admin", $data);
+                      }
+                      echo ".";
+                      ?>
+                    </div>
                     <form class="form-sample" method="POST">
                       <p class="card-description"> This is registration for new admin for system </p>
                       <div class="row">
@@ -142,9 +146,11 @@
                       </thead>
 
                       <?php
+        
                       $num = 1;
                       $stmt= $query->viewAllAdmins();
                       while($result= $stmt->FETCH(PDO::FETCH_ASSOC)) {
+                      
                       ?>
 
                       <tbody>

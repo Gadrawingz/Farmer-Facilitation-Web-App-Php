@@ -2,35 +2,57 @@
         <nav class="sidebar sidebar-offcanvas" id="sidebar">
           <ul class="nav bg-dark">
             <br>
-            <!-- <li class="nav-item">
-              <a class="nav-link" href="messages">
+            <li class="nav-item">
+              <a class="nav-link" href="../manage/announcing?view_all">
                 <i class="menu-icon typcn typcn-document-text"></i>
-                <span class="menu-title">Messages</span>
-              </a>
-            </li> -->
-            <li class="nav-item" style="border-bottom: 2px solid #FFF!important; margin-bottom: 10px;">
-              <a class="nav-link" href="../manage/requests?view_pend">
-                <i class="menu-icon typcn typcn-document-text"></i>
-                <span class="menu-title">Harvests</span>
+                <span class="menu-title">Announcement</span>
               </a>
             </li>
+
+            <li class="nav-item" style="border-bottom: 2px solid #FFF!important; margin-bottom: 10px;">
+              <a class="nav-link" data-toggle="collapse" href="#harvests" aria-expanded="false" aria-controls="harvests">
+                <i class="menu-icon typcn typcn-document-add"></i>
+                <span class="menu-title">Harvests</span>
+                <i class="menu-arrow"></i>
+              </a>
+
+              <div class="collapse" id="harvests">
+                <ul class="nav flex-column sub-menu">
+                  <li class="nav-item">
+                    <a class="nav-link" href="../manage/harvest?view_pend"> Unchecked harvests </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="../manage/harvest?view_checked"> Checked harvests </a>
+                  </li>
+                </ul>
+              </div>
+            </li>
+
+
             <!-- Manage -->
             <li class="nav-item nav-category">Main Menu</li>
  
             <li class="nav-item">
               <a class="nav-link" data-toggle="collapse" href="#reqs" aria-expanded="false" aria-controls="reqs">
                 <i class="menu-icon typcn typcn-document-add"></i>
-                <span class="menu-title">Requests</span>
+                <span class="menu-title">Requests+Report</span>
                 <i class="menu-arrow"></i>
               </a>
 
               <div class="collapse" id="reqs">
                 <ul class="nav flex-column sub-menu">
                   <li class="nav-item">
+                    <a class="nav-link text-primary" href="../manage/limitation?view_all">Request Limits </a>
+                  </li>
+                  <li class="nav-item">
                     <a class="nav-link" href="../manage/requests?view_pend"> Pending requests </a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="../manage/requests?view_conf"> Accepted requests </a>
+                  </li>
+
+                  <li class="nav-item">
+                    <a class="nav-link" href="../manage/requests?view_rej"> Rejected requests </a>
                   </li>
                 </ul>
               </div>
@@ -133,14 +155,6 @@
                 </ul>
               </div>
             </li>
-
-            <li class="nav-item">
-              <a class="nav-link" href="#">
-                <i class="menu-icon typcn typcn-document-text"></i>
-                <span class="menu-title">Generate Report</span>
-              </a>
-            </li>
-
-
+            
           </ul>
         </nav>

@@ -1,5 +1,5 @@
 <?php
-include('connection.php');
+require_once('connection.php');
 
 class Query extends DBConnection {
 	
@@ -21,6 +21,7 @@ class Query extends DBConnection {
 		$count= $query->rowCount();
 		return $count;
 	}
+
 
 	public function adminLogin($email, $pass) {
         $sql= "SELECT * FROM `admin` WHERE email='$email' AND password='$pass' ";
@@ -115,8 +116,9 @@ class Query extends DBConnection {
 		return $stmt;
 	}
 
-	public function registerFarmerByAdmin($fnm, $lnm, $gdr, $dob, $nid, $tel, $pwd, $lar, $dst, $sct, $cll, $vlg) {
-		$sql= "INSERT INTO `farmer`(`firstname`, `lastname`, `gender`, `dob`, `national_id`, `telephone`, `password`, `land_area`, `district`, `sector`, `cell`, `village`, `status`) VALUES ('$fnm', '$lnm', '$gdr', '$dob', '$nid', '$tel', '$pwd', '$lar', '$dst', '$sct', '$cll', '$vlg', 'active')";
+	public function registerFarmerByAdmin($fnm, $lnm, $gdr, $dob, $nid, $tel, $pwd, $are, $pro, $dst, $sct, $cll, $vlg) {
+
+		$sql= "INSERT INTO `farmer`(`firstname`, `lastname`, `gender`, `dob`, `national_id`, `telephone`, `password`, `land_area`, `province`, `district`, `sector`, `cell`, `village`, `status`) VALUES ('$fnm', '$lnm', '$gdr', '$dob', '$nid', '$tel', '$pwd', '$are', '$pro', '$dst', '$sct', '$cll', '$vlg', 'active')";
 		$query= $this->conLink->prepare($sql);
 		$query->execute();
 		$count= $query->rowCount();
@@ -160,6 +162,13 @@ class Query extends DBConnection {
 		$count= $query->rowCount();
 		return $count;			
 	}
+
+	public function countFarmers() {
+		$sql = "SELECT COUNT(*) FROM farmer ";
+		$stmt= $this->conLink->query($sql)->fetchColumn();
+		return $stmt;
+	}
+
 
 
 	// Donnekt Miracles:
@@ -263,29 +272,33 @@ class Query extends DBConnection {
 	}
 
 	//======================== REQ MUHFUCKIN SHITS @Gadrawingz =======================
-	public function viewAllRequests() {
-		$sql="SELECT rq.req_id, rq.farmer_id, fm.firstname, fm.lastname, rq.seed_id, sd.item_name AS s_name, rq.seed_qty, sd.unit_price AS s_price, rq.fert_id, ft.item_name AS f_name, rq.fert_qty, ft.unit_price AS f_price, rq.pest_id, ps.item_name AS p_name, rq.pest_qty, ps.unit_price AS p_price, rq.season_year, rq.season_term, rq.req_status, rq.req_date FROM requests rq JOIN farmer fm ON fm.farmer_id = rq.farmer_id JOIN fertilizer ft ON ft.item_id = rq.fert_id JOIN pesticide ps ON ps.item_id = rq.pest_id JOIN seeds sd ON sd.item_id = rq.seed_id WHERE req_status='Pending' ORDER BY req_date DESC";
-		$stmt= $this->conLink->prepare($sql);
-		$stmt->execute();
-		return $stmt;
-	}
 
-	public function viewConfRequests() {
-		$sql="SELECT rq.req_id, rq.farmer_id, fm.firstname, fm.lastname, rq.seed_id, sd.item_name AS s_name, rq.seed_qty, sd.unit_price AS s_price, rq.fert_id, ft.item_name AS f_name, rq.fert_qty, ft.unit_price AS f_price, rq.pest_id, ps.item_name AS p_name, rq.pest_qty, ps.unit_price AS p_price, rq.season_year, rq.season_term, rq.req_status, rq.req_date FROM requests rq JOIN farmer fm ON fm.farmer_id = rq.farmer_id JOIN fertilizer ft ON ft.item_id = rq.fert_id JOIN pesticide ps ON ps.item_id = rq.pest_id JOIN seeds sd ON sd.item_id = rq.seed_id WHERE req_status='Verified' ORDER BY req_date DESC";
+	public function viewRequestsByStatus($status) {
+		if($status=="Rej") {
+			$r_status = "Rejected";
+		} else if ($status=="Acp") {
+			$r_status = "Accepted";
+		}  else if ($status=="Pnd") {
+			$r_status = "Pending";
+		} else {
+			$r_status = "Pending";
+		}
+
+		$sql="SELECT rq.req_id, rq.farmer_id, fm.firstname, fm.lastname, rq.seed_id, sd.item_name AS s_name, rq.seed_qty, sd.unit_price AS s_price, rq.fert_id, ft.item_name AS f_name, rq.fert_qty, ft.unit_price AS f_price, rq.pest_id, ps.item_name AS p_name, rq.pest_qty, ps.unit_price AS p_price, rq.season_year, rq.season_term, rq.req_status, rq.is_paid, rq.req_date FROM requests rq JOIN farmer fm ON fm.farmer_id = rq.farmer_id JOIN fertilizer ft ON ft.item_id = rq.fert_id JOIN pesticide ps ON ps.item_id = rq.pest_id JOIN seeds sd ON sd.item_id = rq.seed_id WHERE req_status='$r_status' ORDER BY req_date DESC";
 		$stmt= $this->conLink->prepare($sql);
 		$stmt->execute();
 		return $stmt;
 	}
 
 	public function viewRequest($req) {
-		$sql="SELECT rq.req_id, rq.farmer_id, fm.firstname, fm.lastname, rq.seed_id, sd.item_name AS s_name, rq.seed_qty, sd.unit_price AS s_price, rq.fert_id, ft.item_name AS f_name, rq.fert_qty, ft.unit_price AS f_price, rq.pest_id, ps.item_name AS p_name, rq.pest_qty, ps.unit_price AS p_price, rq.season_year, rq.season_term, rq.req_status, rq.req_date FROM requests rq JOIN farmer fm ON fm.farmer_id = rq.farmer_id JOIN fertilizer ft ON ft.item_id = rq.fert_id JOIN pesticide ps ON ps.item_id = rq.pest_id JOIN seeds sd ON sd.item_id = rq.seed_id WHERE req_id='$req' ";
+		$sql="SELECT rq.req_id, rq.farmer_id, fm.telephone, fm.land_area, fm.national_id, fm.firstname, fm.lastname, rq.seed_id, sd.item_name AS s_name, rq.seed_qty, sd.unit_price AS s_price, rq.fert_id, ft.item_name AS f_name, rq.fert_qty, ft.unit_price AS f_price, rq.pest_id, ps.item_name AS p_name, rq.pest_qty, ps.unit_price AS p_price, rq.season_year, rq.season_term, rq.req_status, rq.is_paid, rq.req_date FROM requests rq JOIN farmer fm ON fm.farmer_id = rq.farmer_id JOIN fertilizer ft ON ft.item_id = rq.fert_id JOIN pesticide ps ON ps.item_id = rq.pest_id JOIN seeds sd ON sd.item_id = rq.seed_id WHERE rq.req_id='$req' ";
 		$stmt= $this->conLink->prepare($sql);
 		$stmt->execute();
 		return $stmt;
 	}
 
 	public function confirmFRequest($id) {
-		$sql="UPDATE requests SET req_status='Verified' WHERE req_id='$id' ";
+		$sql="UPDATE requests SET req_status='Accepted' WHERE req_id='$id' ";
 		$query= $this->conLink->prepare($sql);
 		$query->execute();
 		$count= $query->rowCount();
@@ -299,6 +312,145 @@ class Query extends DBConnection {
 		$count= $query->rowCount();
 		return $count;			
 	}
+
+
+	public function rejectRequest($id) {
+		$sql="UPDATE requests SET req_status='Rejected' WHERE req_id='$id' ";
+		$query= $this->conLink->prepare($sql);
+		$query->execute();
+		$count= $query->rowCount();
+		return $count;			
+	}
+
+	public function penRequestCounts() {
+		$sql="SELECT COUNT(*) FROM `requests` WHERE req_status='Pending' ";
+		$stmt= $this->conLink->query($sql)->fetchColumn();
+		return $stmt;
+	}
+
+	public function acpRequestCounts() {
+		$sql="SELECT COUNT(*) FROM `requests` WHERE req_status='Accepted' ";
+		$stmt= $this->conLink->query($sql)->fetchColumn();
+		return $stmt;
+	}
+
+	public function newHarvestCounts() {
+		$sql="SELECT COUNT(*) FROM `harvest` WHERE status='unchecked' ";
+		$stmt= $this->conLink->query($sql)->fetchColumn();
+		return $stmt;
+	}
+
+
+	// Harvests
+	public function viewHarvests() {
+		$sql= "SELECT hv.harvest_id, fm.farmer_id, fm.firstname, fm.lastname, fm.telephone, hv.item_type, hv.quantity, hv.harvest_price, hv.season_year, hv.season_term, hv.status, hv.created_at AS hv_date FROM `harvest` hv LEFT JOIN farmer fm ON fm.farmer_id=hv.farmer_id WHERE hv.status='unchecked' ORDER BY hv.harvest_id DESC ";
+		$stmt= $this->conLink->prepare($sql);
+		$stmt->execute();
+		return $stmt;
+	}
+
+	public function viewHarvest($id) {
+		$sql= "SELECT hv.harvest_id, fm.farmer_id, fm.firstname, fm.lastname, fm.telephone, hv.item_type, hv.quantity, hv.harvest_price, hv.season_year, hv.season_term, hv.status, hv.created_at AS hv_date FROM `harvest` hv LEFT JOIN farmer fm ON fm.farmer_id=hv.farmer_id WHERE hv.harvest_id='$id' ";
+		$stmt= $this->conLink->prepare($sql);
+		$stmt->execute();
+		return $stmt;
+	}
+
+	public function viewCheckedHarvests() {
+		$sql= "SELECT hv.harvest_id, fm.farmer_id, fm.firstname, fm.lastname, fm.telephone,  hv.item_type, hv.quantity, hv.harvest_price, hv.season_year, hv.season_term, hv.status, hv.created_at AS hv_date FROM `harvest` hv LEFT JOIN farmer fm ON fm.farmer_id=hv.farmer_id WHERE hv.status='checked' ";
+		$stmt= $this->conLink->prepare($sql);
+		$stmt->execute();
+		return $stmt;
+	}
+
+	public function confirmHarvest($id) {
+		$sql="UPDATE harvest SET status='checked' WHERE harvest_id='$id' ";
+		$query= $this->conLink->prepare($sql);
+		$query->execute();
+		$count= $query->rowCount();
+		return $count;			
+	}
+	
+	public function cancelHarvest($id) {
+		$sql="UPDATE harvest SET status='unchecked' WHERE harvest_id='$id' ";
+		$query= $this->conLink->prepare($sql);
+		$query->execute();
+		$count= $query->rowCount();
+		return $count;			
+	}
+
+	// Announcement
+	public function addAnnouncement($title, $text) {
+		$sql= "INSERT INTO `announcement`(`ann_title`, `announcement`) VALUES ('$title', '$text')";
+		$query= $this->conLink->prepare($sql);
+		$query->execute();
+		$count= $query->rowCount();
+		return $count;
+
+	}
+
+	public function updateAnnouncement($id, $title, $text){
+		$sql="UPDATE announcement SET ann_title='$title', announcement='$text' WHERE ann_id='$id'";
+		$query= $this->conLink->prepare($sql);
+		$query->execute();
+		$count= $query->rowCount();
+		return $count;
+	}
+
+	public function checkAnnDuplicx($title, $text) {
+		$sql="SELECT COUNT(*) FROM `announcement` WHERE ann_title='$title' AND announcement='$text'";
+		$stmt= $this->conLink->query($sql)->fetchColumn();
+		return $stmt;
+	}
+
+	public function viewAnnouncement($id) {
+		$sql= "SELECT * FROM announcement WHERE ann_id='$id' ";
+		$stmt= $this->conLink->prepare($sql);
+		$stmt->execute();
+		return $stmt;
+	}
+
+	public function viewAnnouncements() {
+		$sql= "SELECT * FROM announcement ORDER BY ann_id DESC";
+		$stmt= $this->conLink->prepare($sql);
+		$stmt->execute();
+		return $stmt;
+	}
+
+	public function deleteAnnouncement($id) {
+		$sql="DELETE FROM announcement WHERE ann_id='$id' ";
+		$query = $this->conLink->prepare($sql);
+		$query->execute();
+		$count= $query->rowCount();
+		return $count;
+	}
+
+
+	// LIMITATIONS::
+	public function viewLimitations() {
+		$sql= "SELECT * FROM limitation ORDER BY item_id ASC";
+		$stmt= $this->conLink->prepare($sql);
+		$stmt->execute();
+		return $stmt;
+	}
+
+
+	public function viewLimitation($id) {
+		$sql= "SELECT * FROM limitation WHERE item_id='$id'";
+		$stmt= $this->conLink->prepare($sql);
+		$stmt->execute();
+		return $stmt;
+	}
+
+	public function updateLimitations($id, $seed_id, $fert_id, $pest_id){
+		$sql="UPDATE limitation SET q_seeds='$seed_id', q_fertilizer='$fert_id', q_pesticide='$pest_id' WHERE item_id='$id'";
+		$query= $this->conLink->prepare($sql);
+		$query->execute();
+		$count= $query->rowCount();
+		return $count;
+	}
+
+
 
 }
 ?>

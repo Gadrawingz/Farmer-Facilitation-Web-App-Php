@@ -52,11 +52,8 @@
                             <label class="col-md-3 col-form-label"><strong><?php echo ucfirst($main_item); ?> Type</strong></label>
                             <div class="col-md-9">
                               <select name="item_type" class="form-control" required>
-                                <option value="Planting">Planting</option>
-                                <option value="Nitrogen">Nitrogen</option>
-                                <option value="Calcium">Calcium</option>
-                                <option value="Micronutrient">Micronutrient</option>
-                                <option value="Weeding">Weeding</option>
+                                <option value="Organic">Organic</option>
+                                <option value="Non-Organic">Non-Organic</option>
                               </select>
                             </div>
                           </div>
@@ -66,7 +63,7 @@
                       <div class="row">
                         <div class="col-md-6">
                           <div class="form-group row">
-                            <label class="col-md-3 col-form-label"><strong><?php echo ucfirst($main_item); ?> Quantity</strong></label>
+                            <label class="col-md-3 col-form-label"><strong>Quantity (dose)</strong></label>
                             <div class="col-md-9">
                               <input type="number" name="quantity" class="form-control" required/>
                             </div>
@@ -148,11 +145,8 @@
                             <div class="col-md-9">
                               <select name="item_type" class="form-control" required>
                                 <option value="<?php echo $res['item_type']; ?>"><?php echo $res['item_type']; ?></option>
-                                <option value="Planting">Planting</option>
-                                <option value="Nitrogen">Nitrogen</option>
-                                <option value="Calcium">Calcium</option>
-                                <option value="Micronutrient">Micronutrient</option>
-                                <option value="Weeding">Weeding</option>
+                                <option value="Organic">Organic</option>
+                                <option value="Non-Organic">Non-Organic</option>
                               </select>
                             </div>
                           </div>
@@ -162,7 +156,7 @@
                       <div class="row">
                         <div class="col-md-6">
                           <div class="form-group row">
-                            <label class="col-md-3 col-form-label"><strong><?php echo ucfirst($main_item); ?> Quantity</strong></label>
+                            <label class="col-md-3 col-form-label"><strong>Quantity (dose)</strong></label>
                             <div class="col-md-9">
                               <input type="number" name="quantity" value="<?php echo $res['quantity'];?>" class="form-control" required/>
                             </div>
@@ -220,6 +214,7 @@
                           <th> No </th>
                           <th> Name </th>
                           <th> Type </th>
+                          <th> Quantity </th>
                           <th> Unit Price </th>
                           <th> Total Price </th>
                           <th> Reg.Date </th>
@@ -238,8 +233,9 @@
                           <td> <?php echo $num; ?> </td>
                           <td> <?php echo $result['item_name']; ?> </td>
                           <td> <?php echo $result['item_type']; ?> </td>
-                          <td> <?php echo $result['quantity']; ?> </td>
-                          <td> <?php echo $result['unit_price']; ?> </td>
+                          <td> <?php echo $result['quantity']; ?> doses </td>
+                          <td> <?php echo $result['unit_price']; ?>rwf </td>
+                          <td> <?php echo $result['quantity'] * $result['unit_price']; ?>rwf </td>
                           <td> <?php echo $result['created_at']; ?> </td>
                           <td class="text-center"> 
                             <div class="btn-group" role="group">
